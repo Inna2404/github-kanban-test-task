@@ -12,6 +12,8 @@ function App() {
   const [owner, setOwner] = useState("");
   const [repo, setRepo] = useState("");
 
+  const [stars, setStars] = useState(null);
+
   const [issues, setIssues] = useState(() => {
     const saved = localStorage.getItem("issues");
     return saved
@@ -35,9 +37,11 @@ function App() {
         <Header
           repoUrl={repoUrl}
           setRepoUrl={setRepoUrl}
-          getData={() => getData(repoUrl, setOwner, setRepo, setIssues)}
+          getData={() =>
+            getData(repoUrl, setOwner, setRepo, setIssues, setStars)
+          }
         />
-        <RepositoryInfo owner={owner} repo={repo} />
+        <RepositoryInfo owner={owner} repo={repo} stars={stars} />
         <Cards issues={issues} setIssues={setIssues} />
       </div>
     </DndProvider>

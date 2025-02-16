@@ -1,6 +1,12 @@
 import React from "react";
-const RepositoryInfo = ({ owner, repo }) => {
+const RepositoryInfo = ({ owner, repo, stars }) => {
   if (!owner || !repo) return null;
+
+  function formatStars(count) {
+    return count >= 100
+      ? (count / 1000).toFixed(1) + " K stars"
+      : count + "stars";
+  }
   return (
     <div className="discrabe_repo">
       {owner && repo ? (
@@ -10,6 +16,9 @@ const RepositoryInfo = ({ owner, repo }) => {
         </>
       ) : (
         ""
+      )}
+      {stars !== null && (
+        <span style={{ width: 20, height: 20 }}> ⭐{formatStars(stars)}</span>
       )}
     </div>
   );
