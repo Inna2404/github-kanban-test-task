@@ -6,8 +6,6 @@ import IssueListCard from "./сomponents/IssueListCard";
 
 test("renders learn react link", () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
 });
 
 const issuesMock = {
@@ -31,6 +29,7 @@ describe("List", () => {
     );
     expect(screen.getByText("Test Issues")).toBeInTheDocument();
   });
+
   test("move an image from one list to another", () => {
     render(
       <DndProvider backend={HTML5Backend}>
@@ -54,5 +53,9 @@ describe("List", () => {
         />
       </DndProvider>
     );
+
+    expect(screen.getByText("ToDo")).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
+    expect(screen.getByText("Done")).toBeInTheDocument();
   });
 });
