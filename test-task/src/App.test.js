@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import IssueListCard from "./сomponents/IssueListCard";
+import IssueListCard from "./сomponents/IssueListCard.tsx";
 
 test("renders learn react link", () => {
   render(<App />);

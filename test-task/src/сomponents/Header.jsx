@@ -9,7 +9,7 @@ const Header = ({ repoUrl, setRepoUrl, getData }) => {
         value={repoUrl}
         onChange={(e) => setRepoUrl(e.target.value)}
       ></input>
-      <button onClick={getData}>Load issues</button>
+      <button onClick={getData()}>Load issues</button>
     </header>
   );
 };

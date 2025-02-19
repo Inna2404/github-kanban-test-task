@@ -4,8 +4,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import getData from "./services/githubService";
 import Header from "./сomponents/Header.jsx";
-import RepositoryInfo from "./сomponents/RepositoryInfo.jsx";
-import Cards from "./сomponents/Cards.jsx";
+import RepositoryInfo from "./сomponents/RepositoryInfo.tsx";
+import Cards from "./сomponents/Cards.tsx";
 
 function App() {
   const [repoUrl, setRepoUrl] = useState("");
