@@ -67,34 +67,34 @@ describe("List", () => {
         />
       </DndProvider>
     );
-    const todoList = screen.getByText("ToDo");
-    const inProgressList = screen.getByText("In Progress");
+
     const issueCard = screen.getByText("Test Issues 1");
+    const inProgressList = screen.getByText("In Progress");
 
     expect(issueCard).toBeInTheDocument();
-    fireEvent.dragStart(issueCard);
 
+    fireEvent.dragStart(issueCard);
     await waitFor(() => fireEvent.dragOver(inProgressList));
     fireEvent.drop(inProgressList);
 
     await waitFor(() => {
-      // expect(setIssuesMock).toHaveBeenCalledTimes(1);
-      expect(setIssuesMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          todo: [],
-          inProgress: [
-            {
-              id: 1,
-              title: "Test Issues 1",
-              number: 123,
-              created_at: "3",
-              comments: 5,
-              status: "inProgress"
-            }
-          ],
-          done: []
-        })
-      );
+      expect(setIssuesMock).toHaveBeenCalledTimes(1);
+
+      expect(setIssuesMock).toHaveBeenCalledWith(expect.any(Function));
+    });
+    expect(setIssuesMock.mock.calls[0][0](issuesMock)).toEqual({
+      todo: [],
+      inProgress: [
+        {
+          id: 1,
+          title: "Test Issues 1",
+          number: 123,
+          created_at: "3",
+          comments: 5,
+          status: "inProgress"
+        }
+      ],
+      done: []
     });
   });
 });
