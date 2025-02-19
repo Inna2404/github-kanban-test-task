@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import getData from "./services/githubService";
-import Header from "./сomponents/Header.jsx";
+import Header from "./сomponents/Header.tsx";
 import RepositoryInfo from "./сomponents/RepositoryInfo.tsx";
 import Cards from "./сomponents/Cards.tsx";
 

@@ -1,6 +1,12 @@
 import React from "react";
 
-const Header = ({ repoUrl, setRepoUrl, getData }) => {
+interface HeaderProps {
+  repoUrl: string;
+  setRepoUrl: React.Dispatch<React.SetStateAction<string>>;
+  getData: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ repoUrl, setRepoUrl, getData }) => {
   return (
     <header className="serch_container">
       <input
@@ -9,7 +15,7 @@ const Header = ({ repoUrl, setRepoUrl, getData }) => {
         value={repoUrl}
         onChange={(e) => setRepoUrl(e.target.value)}
       ></input>
-      <button onClick={getData()}>Load issues</button>
+      <button onClick={getData}>Load issues</button>
     </header>
   );
 };
