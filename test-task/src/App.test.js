@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./App";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -31,31 +31,54 @@ describe("List", () => {
   });
 
   test("move an image from one list to another", () => {
+    const setIssuesMock = jest.fn();
+
     render(
       <DndProvider backend={HTML5Backend}>
         <IssueListCard
           title="ToDo"
           status="todo"
           issues={issuesMock.todo}
-          setIssues={jest.fn()}
+          setIssues={setIssuesMock}
         />
         <IssueListCard
           title="In Progress"
           status="inProgress"
           issues={issuesMock.inProgress}
-          setIssues={jest.fn()}
+          setIssues={setIssuesMock}
         />
         <IssueListCard
           title="Done"
           status="done"
           issues={issuesMock.done}
-          setIssues={jest.fn()}
+          setIssues={setIssuesMock}
         />
       </DndProvider>
     );
 
-    expect(screen.getByText("ToDo")).toBeInTheDocument();
-    expect(screen.getByText("In Progress")).toBeInTheDocument();
-    expect(screen.getByText("Done")).toBeInTheDocument();
+    expect(screen.getByText("Test Issue")).toBeInTheDocument();
+
+    const todoList = screen.getByText("ToDo");
+    const inProgress = screen.getByText("In Progress");
+
+    fireEvent.dragStart(todoList);
+    fireEvent.drop(inProgress);
+
+    expect(setIssuesMock).toHaveBeenCalledTimes(1);
+    expect(setIssuesMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        todo: [],
+        inProgress: [
+          {
+            id: "1",
+            title: "Test Issue",
+            number: 123,
+            comments: 5,
+            created_at: "3"
+          }
+        ],
+        done: []
+      })
+    );
   });
 });
