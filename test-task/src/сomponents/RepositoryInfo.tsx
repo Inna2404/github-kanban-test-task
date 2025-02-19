@@ -1,14 +1,14 @@
 import React from "react";
 
-interface InfoProps{
-  owner:string;
-  repo:string;
-  stars?:number | null
+interface InfoProps {
+  owner: string;
+  repo: string;
+  stars?: number | null;
 }
 const RepositoryInfo = ({ owner, repo, stars }) => {
   if (!owner || !repo) return null;
 
-  function formatStars(count) {
+  function formatStars(count: number): string {
     return count >= 100
       ? (count / 1000).toFixed(1) + " K stars"
       : count + "stars";

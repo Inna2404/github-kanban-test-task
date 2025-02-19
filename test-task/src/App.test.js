@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import App from "./App";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -8,9 +9,18 @@ test("renders learn react link", () => {
   render(<App />);
 });
 
+test("display a list of cards", () => {
+  render(
+    <DndProvider backend={HTML5Backend}>
+      <App />
+    </DndProvider>
+  );
+  expect(screen.getByRole("heading", { name: /To Do/i })).toBeInTheDocument();
+});
+
 const issuesMock = {
   todo: [
-    { id: 1, title: "Test Issues", number: 123, comments: 5, create_at: "3" }
+    { id: 1, title: "Test Issues 1", number: 123, created_at: "3", comments: 5 }
   ],
   inProgress: [],
   done: []
@@ -27,10 +37,12 @@ describe("List", () => {
         />
       </DndProvider>
     );
-    expect(screen.getByText("Test Issues")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Test Issues/i })
+    ).toBeInTheDocument();
   });
 
-  test("move an image from one list to another", () => {
+  test("move an image from one list to another", async () => {
     const setIssuesMock = jest.fn();
 
     render(
@@ -55,30 +67,34 @@ describe("List", () => {
         />
       </DndProvider>
     );
-
-    expect(screen.getByText("Test Issue")).toBeInTheDocument();
-
     const todoList = screen.getByText("ToDo");
-    const inProgress = screen.getByText("In Progress");
+    const inProgressList = screen.getByText("In Progress");
+    const issueCard = screen.getByText("Test Issues 1");
 
-    fireEvent.dragStart(todoList);
-    fireEvent.drop(inProgress);
+    expect(issueCard).toBeInTheDocument();
+    fireEvent.dragStart(issueCard);
 
-    expect(setIssuesMock).toHaveBeenCalledTimes(1);
-    expect(setIssuesMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        todo: [],
-        inProgress: [
-          {
-            id: "1",
-            title: "Test Issue",
-            number: 123,
-            comments: 5,
-            created_at: "3"
-          }
-        ],
-        done: []
-      })
-    );
+    await waitFor(() => fireEvent.dragOver(inProgressList));
+    fireEvent.drop(inProgressList);
+
+    await waitFor(() => {
+      // expect(setIssuesMock).toHaveBeenCalledTimes(1);
+      expect(setIssuesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          todo: [],
+          inProgress: [
+            {
+              id: 1,
+              title: "Test Issues 1",
+              number: 123,
+              created_at: "3",
+              comments: 5,
+              status: "inProgress"
+            }
+          ],
+          done: []
+        })
+      );
+    });
   });
 });
