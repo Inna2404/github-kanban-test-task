@@ -1,4 +1,6 @@
 import React, { useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { moveIssues } from "../store/IssuesSlice.ts";
 import { useDrop } from "react-dnd";
 import IssueCard from "./IssueCard.tsx";
 
@@ -15,55 +17,21 @@ interface IssueListCardProps {
   issues: Issue[];
   title: string;
   status: string;
-  setIssues: React.Dispatch<React.SetStateAction<Record<string, Issue[]>>>;
 }
 
 const IssueListCard: React.FC<IssueListCardProps> = ({
   issues,
   title,
-  status,
-  setIssues
+  status
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
-
-  const moveIssue = (issueId: string, newStatus: string) => {
-    setIssues((prevIssues) => {
-      let issueToMove: Issue | null = null;
-
-      const updatedIssues = Object.keys(prevIssues).reduce(
-        (acc, key) => {
-          acc[key] = prevIssues[key].filter((issue) => {
-            if (issue.id === issueId) {
-              issueToMove = issue;
-              return false;
-            }
-            return true;
-          });
-          return acc;
-        },
-        {} as Record<string, Issue[]>
-      );
-
-      if (issueToMove) {
-        const updatedIssue: Issue = {
-          ...(issueToMove as Issue),
-          status: newStatus
-        };
-
-        if (!updatedIssues[newStatus]) {
-          updatedIssues[newStatus] = [];
-        }
-
-        updatedIssues[newStatus].push(updatedIssue);
-      }
-
-      return updatedIssues;
-    });
-  };
+  const dispatch = useDispatch();
 
   const [{ isOver }, drop] = useDrop({
     accept: "ISSUES",
-    drop: (item: { id: string }) => moveIssue(item.id, status),
+    drop: (item: { id: string }) => {
+      dispatch(moveIssues({ issueId: item.id, newStatus: status }));
+    },
     collect: (monitor) => ({
       isOver: !!monitor.isOver()
     })
@@ -80,7 +48,7 @@ const IssueListCard: React.FC<IssueListCardProps> = ({
       <h2>{title}</h2>
       <div className={`list_issues_cards ${issues.length > 0 ? "filled" : ""}`}>
         {issues.length === 0 ? (
-          <p>No issues</p>
+          <p className="no_issues">No issues</p>
         ) : (
           issues.map((issue) => <IssueCard key={issue.id} issue={issue} />)
         )}

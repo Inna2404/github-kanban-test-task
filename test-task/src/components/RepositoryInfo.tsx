@@ -1,10 +1,5 @@
 import React from "react";
 
-interface InfoProps {
-  owner: string;
-  repo: string;
-  stars?: number | null;
-}
 const RepositoryInfo = ({ owner, repo, stars }) => {
   if (!owner || !repo) return null;
 

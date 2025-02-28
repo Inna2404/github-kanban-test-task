@@ -1,5 +1,12 @@
 import repoInfoGet from "../utils/getRepoInfo";
-const getData = async (repoUrl, setOwner, setRepo, setIssues, setStars) => {
+import {
+  setIssues,
+  setStars,
+  setOwner,
+  setRepo
+} from "../store/IssuesSlice.ts";
+
+const getData = async (repoUrl, dispatch) => {
   const repoInfo = repoInfoGet(repoUrl);
 
   if (!repoInfo) {
@@ -7,10 +14,11 @@ const getData = async (repoUrl, setOwner, setRepo, setIssues, setStars) => {
   }
 
   const { owner, repo } = repoInfo;
-  setOwner(owner);
-  setRepo(repo);
 
   try {
+    dispatch(setOwner(owner));
+    dispatch(setRepo(repo));
+
     const response = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/issues`
     );
@@ -22,7 +30,7 @@ const getData = async (repoUrl, setOwner, setRepo, setIssues, setStars) => {
     const data = await response.json();
     console.log(data);
 
-    setIssues({ todo: data, inProgress: [], done: [] });
+    dispatch(setIssues({ todo: data, inProgress: [], done: [] }));
 
     const repoResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}`
@@ -30,9 +38,11 @@ const getData = async (repoUrl, setOwner, setRepo, setIssues, setStars) => {
     if (!repoResponse.ok) {
       throw new Error("GitHub API error (repo)");
     }
+
     const repoData = await repoResponse.json();
     console.log(repoData);
-    setStars(repoData.stargazers_count);
+
+    dispatch(setStars(repoData.stargazers_count));
   } catch (err) {
     console.log("Error issues:", err);
   }

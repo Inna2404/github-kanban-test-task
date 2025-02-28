@@ -51,6 +51,11 @@
   letter-spacing: 1px;
   font-size: 22px;
 }
+
+.no_issues {
+  display: flex;
+  justify-content: center;
+}
 .list_issues_cards.filled {
   height: auto;
 }

@@ -3,16 +3,15 @@ import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import getData from "./services/githubService";
-import Header from "./сomponents/Header.tsx";
-import RepositoryInfo from "./сomponents/RepositoryInfo.tsx";
-import Cards from "./сomponents/Cards.tsx";
+import Header from "./components/Header.tsx";
+import RepositoryInfo from "./components/RepositoryInfo.tsx";
+import Cards from "./components/Cards.tsx";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
   const [repoUrl, setRepoUrl] = useState("");
-  const [owner, setOwner] = useState("");
-  const [repo, setRepo] = useState("");
-
-  const [stars, setStars] = useState(null);
+  const { owner, repo, stars } = useSelector((state) => state.issues);
 
   const [issues, setIssues] = useState(() => {
     const saved = localStorage.getItem("issues");
@@ -37,9 +36,7 @@ function App() {
         <Header
           repoUrl={repoUrl}
           setRepoUrl={setRepoUrl}
-          getData={() =>
-            getData(repoUrl, setOwner, setRepo, setIssues, setStars)
-          }
+          getData={() => getData(repoUrl, dispatch)}
         />
         <RepositoryInfo owner={owner} repo={repo} stars={stars} />
         <Cards issues={issues} setIssues={setIssues} />
