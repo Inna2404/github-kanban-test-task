@@ -51,6 +51,10 @@ const IssuesSlice = createSlice({
       const { issueId, newStatus } = action.payload;
       let issueToMove: Issue | null = null;
 
+      if (!state.issues) {
+        console.error("state.issues is undefined!");
+        return;
+      }
       Object.keys(state.issues).forEach((status) => {
         state.issues[status] = state.issues[status].filter((issue) => {
           if (issue.id === issueId) {
